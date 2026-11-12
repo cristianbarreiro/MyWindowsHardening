@@ -14,6 +14,7 @@ MyWindowsHardening/
 │       ├── README.md
 │       └── Outlook-NTLM-SMB-CVE-2026-124194/
 │           ├── README.md
+│           ├── SCOPE.md
 │           └── Windows-NTLM-SMB-Hardening.ps1
 └── Win11/
     ├── README.md
@@ -25,8 +26,8 @@ MyWindowsHardening/
 
 | Plataforma | Dominio | Perfil | Estado |
 |---|---|---|---|
-| Windows 10 22H2 (19045) | Autenticación de red / protección de credenciales | Outlook, NTLM y SMB — CVE-2026-124194 | Primera implementación |
-| Windows 11 | Autenticación de red | Reservado para una implementación y validación independientes | Pendiente |
+| [Windows 10 22H2 (19045)](./Win10/README.md) | [Autenticación de red](./Win10/Network-Authentication/README.md) | [Outlook, NTLM y SMB — CVE-2026-124194](./Win10/Network-Authentication/Outlook-NTLM-SMB-CVE-2026-124194/README.md) | Primera implementación |
+| [Windows 11](./Win11/README.md) | [Autenticación de red](./Win11/Network-Authentication/README.md) | Reservado para una implementación y validación independientes | Pendiente |
 
 ## Cómo se organiza cada hardening
 
