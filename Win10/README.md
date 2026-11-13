@@ -8,7 +8,7 @@ Esta carpeta contiene perfiles diseñados y comprobados específicamente para Wi
 - **Build base:** 19045.
 - **Entorno de primera validación:** Windows 10 Home Single Language, 22H2, build 19045.6466 (12/11/2026).
 
-La validación anterior representa un único equipo y no certifica automáticamente todas las ediciones, políticas de dominio o configuraciones de Windows 10.
+Las evidencias de los perfiles representan un único equipo y no certifican automáticamente todas las ediciones, políticas de dominio o configuraciones de Windows 10.
 
 ## Estado de soporte y actualizaciones
 
@@ -22,10 +22,13 @@ Referencias:
 
 ## Perfiles disponibles
 
-| Carpeta | Objetivo |
-|---|---|
-| [Network-Authentication](./Network-Authentication/README.md) | Controles de autenticación de red, SMB y exposición de credenciales. |
+| Dominio | Carpeta / perfil | Objetivo |
+|---|---|---|
+| [Network-Authentication](./Network-Authentication/README.md) | [Outlook / NTLM / SMB — CVE-2026-124194](./Network-Authentication/Outlook-NTLM-SMB-CVE-2026-124194/README.md) | Reducir determinadas rutas de exposición de autenticación de red y habilitar auditoría NTLM. |
+| [Virtualization-Isolation](./Virtualization-Isolation/README.md) | [VirtualBox / Kali Host Isolation](./Virtualization-Isolation/VirtualBox-Kali-Host-Isolation/README.md) | Reducir la superficie de comunicación entre una VM Kali Linux y el host Windows, preservando la conectividad NAT y las herramientas de desarrollo. |
 
 ## Convenciones
 
 Cada perfil de esta carpeta debe especificar la versión/build admitida y rechazar la ejecución si el equipo no pertenece al ámbito previsto, cuando sea técnicamente posible.
+
+Los perfiles de aislamiento de VM deben documentar por separado la topología virtual, las interfaces conectadas, las integraciones Guest↔Host, las reglas de firewall, los servicios del host, la conectividad de salida y los riesgos que NAT no elimina.
