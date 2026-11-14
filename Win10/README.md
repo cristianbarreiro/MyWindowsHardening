@@ -20,6 +20,13 @@ Referencias:
 - [Windows 10 — información de versión y ESU](https://learn.microsoft.com/es-es/windows/release-health/release-information)
 - [Ciclo de vida de Windows 10 Home y Pro](https://learn.microsoft.com/en-us/lifecycle/products/windows-10-home-and-pro)
 
+## Baseline general reutilizable
+
+- [Win10-Hardening-20261113.ps1](./Win10-Hardening-20261113.ps1) — núcleo de auditoría de solo lectura v0.1.0.
+- [BASELINE.md](./BASELINE.md) — arquitectura, modos, límites y hoja de ruta.
+
+El baseline general no sustituye los perfiles especializados ni los ejecuta automáticamente. Su función inicial es inventariar y producir informes sin cambiar el equipo.
+
 ## Perfiles disponibles
 
 | Dominio | Carpeta / perfil | Objetivo |

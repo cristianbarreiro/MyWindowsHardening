@@ -11,6 +11,8 @@ MyWindowsHardening/
 ├── README.md
 ├── Win10/
 │   ├── README.md
+│   ├── Win10-Hardening-20261113.ps1
+│   ├── BASELINE.md
 │   ├── Network-Authentication/
 │   │   ├── README.md
 │   │   └── Outlook-NTLM-SMB-CVE-2026-124194/
@@ -29,6 +31,11 @@ MyWindowsHardening/
     └── Network-Authentication/
         └── README.md
 ~~~
+
+## Baseline general de Windows 10
+
+- [Win10-Hardening-20261113.ps1](./Win10/Win10-Hardening-20261113.ps1) — núcleo reutilizable v0.1.0, actualmente de solo lectura.
+- [Documentación del baseline](./Win10/BASELINE.md) — uso, alcance, seguridad y evolución modular.
 
 ## Perfiles
 
