@@ -14,28 +14,18 @@ MyWindowsHardening/
 │   ├── Win10-Hardening-20261113.ps1
 │   ├── BASELINE.md
 │   ├── Network-Authentication/
-│   │   ├── README.md
-│   │   └── Outlook-NTLM-SMB-CVE-2026-124194/
-│   │       ├── README.md
-│   │       ├── SCOPE.md
-│   │       └── Windows-NTLM-SMB-Hardening.ps1
 │   └── Virtualization-Isolation/
-│       ├── README.md
-│       └── VirtualBox-Kali-Host-Isolation/
-│           ├── README.md
-│           ├── SCOPE.md
-│           ├── VALIDATION.md
-│           └── OPERATIONS.md
 └── Win11/
     ├── README.md
-    └── Network-Authentication/
-        └── README.md
+    └── Win11-Hardening-20261119.ps1
 ~~~
 
-## Baseline general de Windows 10
+## Baselines generales
 
-- [Win10-Hardening-20261113.ps1](./Win10/Win10-Hardening-20261113.ps1) — núcleo reutilizable v0.1.0, actualmente de solo lectura.
-- [Documentación del baseline](./Win10/BASELINE.md) — uso, alcance, seguridad y evolución modular.
+- [Windows 10 — Win10-Hardening-20261113.ps1](./Win10/Win10-Hardening-20261113.ps1) — núcleo reutilizable v0.1.0, actualmente de solo lectura.
+- [Documentación del baseline Windows 10](./Win10/BASELINE.md).
+- [Windows 11 — Win11-Hardening-20261119.ps1](./Win11/Win11-Hardening-20261119.ps1) — auditor de solo lectura v0.1.0, diseñado para Windows 11 cliente (build 22000+).
+- [Documentación del baseline Windows 11](./Win11/README.md).
 
 ## Perfiles
 
@@ -43,7 +33,8 @@ MyWindowsHardening/
 |---|---|---|---|
 | [Windows 10 22H2 (19045)](./Win10/README.md) | [Autenticación de red](./Win10/Network-Authentication/README.md) | [Outlook, NTLM y SMB — CVE-2026-124194](./Win10/Network-Authentication/Outlook-NTLM-SMB-CVE-2026-124194/README.md) | Primera implementación publicada |
 | [Windows 10 22H2 (19045)](./Win10/README.md) | [Aislamiento de virtualización](./Win10/Virtualization-Isolation/README.md) | [VirtualBox — aislamiento de Kali respecto del host](./Win10/Virtualization-Isolation/VirtualBox-Kali-Host-Isolation/README.md) | Configuración aplicada y validada en un único equipo; documentación técnica |
-| [Windows 11](./Win11/README.md) | [Autenticación de red](./Win11/Network-Authentication/README.md) | Reservado para una implementación y validación independientes | Pendiente |
+| [Windows 11](./Win11/README.md) | Baseline general | [Auditoría Windows 11](./Win11/Win11-Hardening-20261119.ps1) | v0.1.0 — solo lectura |
+| [Windows 11](./Win11/README.md) | Autenticación de red | [Network-Authentication](./Win11/Network-Authentication/README.md) | Pendiente |
 
 ## Cómo se organiza cada hardening
 
