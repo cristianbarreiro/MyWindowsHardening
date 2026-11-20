@@ -328,7 +328,7 @@ try {
     exit 1
 }
 ) { $servicingEnd = [datetime]'2026-11-10'; $servicingBasis = '23H2 Enterprise/Education' }
-                elseif ($edition -match '^(Core|CoreN|Professional|ProfessionalN|ProfessionalWorkstation|ProfessionalEducation)
+                elseif ($edition -match '^(Core|CoreN|CoreSingleLanguage|CoreCountrySpecific|Professional|ProfessionalN|ProfessionalSingleLanguage|ProfessionalCountrySpecific|ProfessionalWorkstation|ProfessionalEducation|ProfessionalEducationN)
     } catch {
         Add-Result 'System' 'Operating system inventory' 'ERROR' $null $_.Exception.Message
     }
