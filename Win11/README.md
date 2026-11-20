@@ -28,6 +28,7 @@ Los informes JSON, CSV y TXT se guardan en `Reports` junto al script, salvo que 
 ## Qué inspecciona
 
 - Versión, edición, build y arquitectura de Windows.
+- Estado del ciclo de vida de Windows 11, separado de la compatibilidad técnica del auditor. Distingue fechas de fin de actualizaciones por versión y familia de edición para 23H2, 24H2, 25H2, 26H1 y 26H2; las combinaciones no reconocidas se marcan como `REVIEW` y requieren verificación manual.
 - Windows Defender Firewall y Microsoft Defender.
 - Indicadores de UAC, SmartScreen, AutoRun, LSA protection y Credential Guard configurados en el Registro.
 - Secure Boot, TPM y estado de Device Guard/VBS cuando la plataforma expone esos datos.
@@ -48,3 +49,12 @@ Los informes JSON, CSV y TXT se guardan en `Reports` junto al script, salvo que 
 ## Evolución
 
 Los módulos de aplicación se incorporarán por separado, después de definir alcance, compatibilidad por build/edición, backup, aplicación idempotente, rollback y validación. La auditoría inicial no debe interpretarse como una recomendación automática para cambiar los valores observados.
+
+
+### Ciclo de vida y mantenimiento de la tabla
+
+La comprobación de mantenimiento compara la fecha local del equipo con las fechas de fin de actualizaciones publicadas por Microsoft para la versión y edición detectadas. Un resultado `FAIL` en la categoría `Servicing` indica que se superó la fecha publicada de fin de actualizaciones; no significa que el auditor sea técnicamente incompatible. El auditor sigue siendo de solo lectura.
+
+La tabla es una referencia versionada, no una consulta en tiempo real. Debe revisarse cuando Microsoft actualice Windows release health o Lifecycle. Se contemplan explícitamente Windows 11 Enterprise LTSC 2024 e IoT Enterprise LTSC 2024. Si la combinación de versión/edición no está contemplada, el resultado será `REVIEW`, nunca una afirmación automática de soporte.
+
+Fuentes oficiales: [Windows 11 release information](https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information), [Windows 11 Home and Pro lifecycle](https://learn.microsoft.com/en-us/lifecycle/products/windows-11-home-and-pro) y [Windows 11 24H2 release health](https://learn.microsoft.com/en-us/windows/release-health/status-windows-11-24H2).
