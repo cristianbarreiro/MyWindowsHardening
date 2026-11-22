@@ -49,4 +49,4 @@ MyWindowsHardening/
 7. Los scripts complementan las actualizaciones del proveedor; no corrigen por sí solos vulnerabilidades de aplicaciones.
 
 ## Aviso
-Los scripts que modifiquen controles de seguridad deben revisarse y probarse en un entorno controlado. Las políticas de dominio, dispositivos NAS, servidores heredados, VPN, hipervisores y aplicaciones de terceros pueden cambiar el resultado.
+Los scripts que modifiquen controles de seguridad deben ejecutarse con privilegios administrativos, revisarse y probarse en un entorno controlado. Las políticas de dominio, dispositivos NAS, servidores heredados, VPN, hipervisores y aplicaciones de terceros pueden cambiar el resultado.
