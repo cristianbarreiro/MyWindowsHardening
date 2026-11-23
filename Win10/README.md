@@ -14,7 +14,7 @@ Las evidencias de los perfiles representan un único equipo y no certifican auto
 
 Windows 10 22H2 terminó su soporte ordinario el 14/10/2025. Los equipos que continúen en Windows 10 deben comprobar su elegibilidad e inscripción en el programa ESU y mantener instaladas las actualizaciones disponibles. El hardening de este repositorio no sustituye esas actualizaciones.
 
-En la información de versión de Microsoft consultada el 26/10/2026 figura la build 19045.7811 como actualización ESU de Windows 10 22H2. El equipo usado para la primera validación, build 19045.6466, estaba por debajo de esa referencia; comprobá Windows Update/ESU antes de considerar el sistema actualizado.
+Según el historial de versiones de Microsoft consultado el 23/11/2026, la actualización más reciente publicada para Windows 10 22H2 es la 2026-11 OOB del 13/11/2026: build **19045.7850 (KB5136493)**. Esta referencia no significa que todos los equipos puedan recibirla: las actualizaciones ESU requieren elegibilidad e inscripción aplicable. Verificá Windows Update, el estado de ESU y la edición/canal del equipo. El equipo usado para la primera validación, build 19045.6466, está por debajo de esa referencia histórica; no debe considerarse actualizado por aquella prueba.
 
 Referencias:
 - [Windows 10 — información de versión y ESU](https://learn.microsoft.com/es-es/windows/release-health/release-information)
@@ -22,10 +22,10 @@ Referencias:
 
 ## Baseline general reutilizable
 
-- [Win10-Hardening-20261113.ps1](./Win10-Hardening-20261113.ps1) — núcleo de auditoría de solo lectura v0.1.0.
+- [Win10-Hardening-20261113.ps1](./Win10-Hardening-20261113.ps1) — núcleo de auditoría de solo lectura v0.1.1.
 - [BASELINE.md](./BASELINE.md) — arquitectura, modos, límites y hoja de ruta.
 
-El baseline general no sustituye los perfiles especializados ni los ejecuta automáticamente. Su función inicial es inventariar y producir informes sin cambiar el equipo.
+El baseline general no sustituye los perfiles especializados ni los ejecuta automáticamente. Su función es inventariar y producir informes sin cambiar la configuración del equipo. Los informes contienen datos del dispositivo, adaptadores y postura de seguridad; protegé los archivos y sanealos antes de compartirlos.
 
 ## Perfiles disponibles
 
