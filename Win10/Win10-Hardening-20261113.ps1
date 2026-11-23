@@ -23,7 +23,7 @@ Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
 $script:Results = New-Object System.Collections.Generic.List[object]
 $script:StartedAt = Get-Date
-$script:ScriptVersion = '0.1.0-bootstrap'
+$script:ScriptVersion = '0.1.1-bootstrap'
 
 function Add-Result {
     param(
@@ -127,7 +127,7 @@ function Invoke-ReadOnlyAudit {
             Add-Result 'SMB' 'Server EnableSMB2Protocol' 'INFO' $s.EnableSMB2Protocol
             Add-Result 'SMB' 'Server RequireSecuritySignature' 'INFO' $s.RequireSecuritySignature
         } catch { Add-Result 'SMB' 'Server configuration' 'ERROR' $null $_.Exception.Message }
-    }
+    } else { Add-Result 'SMB' 'Server cmdlets' 'UNAVAILABLE' $null }
 
     foreach ($n in @('LanmanServer','LanmanWorkstation','FDResPub','fdPHost','SSDPSRV','upnphost','WlanSvc','DoSvc','Spooler','SharedAccess','vmcompute','WslService')) {
         try {
@@ -166,6 +166,8 @@ function Invoke-ReadOnlyAudit {
             $d = Get-DOConfig
             Add-Result 'DeliveryOptimization' 'DownloadMode' 'INFO' $d.DODownloadMode
         } catch { Add-Result 'DeliveryOptimization' 'Configuration query' 'ERROR' $null $_.Exception.Message }
+    } else {
+        Add-Result 'DeliveryOptimization' 'Get-DOConfig cmdlet' 'UNAVAILABLE' $null
     }
 
     $script:Results | Format-Table -AutoSize -Wrap
@@ -181,11 +183,15 @@ function Save-AuditReport {
     if ([string]::IsNullOrWhiteSpace($Directory)) {
         $Directory = Join-Path -Path $PSScriptRoot -ChildPath 'Reports'
     }
-    if (-not (Test-Path -LiteralPath $Directory)) {
-        New-Item -Path $Directory -ItemType Directory -Force | Out-Null
+    if (Test-Path -LiteralPath $Directory -PathType Leaf) {
+        throw ("The report path exists as a file, not a directory: {0}" -f $Directory)
     }
-    $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-    $base = 'Win10-Hardening-Audit-' + $stamp
+    if (-not (Test-Path -LiteralPath $Directory -PathType Container)) {
+        New-Item -Path $Directory -ItemType Directory -Force -ErrorAction Stop | Out-Null
+    }
+    $stamp = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
+    $suffix = [guid]::NewGuid().ToString('N').Substring(0, 6)
+    $base = 'Win10-Hardening-Audit-{0}-{1}' -f $stamp, $suffix
     $json = Join-Path $Directory ($base + '.json')
     $csv = Join-Path $Directory ($base + '.csv')
     $txt = Join-Path $Directory ($base + '.txt')
@@ -205,6 +211,7 @@ function Save-AuditReport {
     $lines.Add('MyWindowsHardening - Windows 10 Audit')
     $lines.Add(('Computer: {0}' -f $env:COMPUTERNAME))
     $lines.Add(('Generated: {0}' -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')))
+    $lines.Add(('ScriptVersion: {0}' -f $script:ScriptVersion))
     $lines.Add('ReadOnly: True')
     $lines.Add('')
     foreach ($r in $script:Results) {
@@ -216,6 +223,7 @@ function Save-AuditReport {
     Write-Host $json
     Write-Host $csv
     Write-Host $txt
+    Write-Warning 'Reports include device, network and security posture details. Protect them and sanitize them before sharing.'
 }
 
 if ($Mode -eq 'Apply' -or $Mode -eq 'Restore') {
