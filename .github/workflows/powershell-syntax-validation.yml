@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   parse:
-    name: Parse baseline PowerShell scripts
+    name: Parse all Windows PowerShell scripts
     runs-on: windows-latest
     steps:
       - name: Check out repository
@@ -23,21 +23,20 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference = 'Stop'
-          $paths = @(
-              'Win10/Win10-Hardening-20261113.ps1',
-              'Win10/Network-Authentication/Outlook-NTLM-SMB-CVE-2026-124194/Windows-NTLM-SMB-Hardening.ps1',
-              'Win11/Win11-Hardening-20261119.ps1'
+          $scriptFiles = @(
+              Get-ChildItem -Path 'Win10','Win11' -Filter '*.ps1' -Recurse -File |
+                  Sort-Object -Property FullName
           )
 
-          foreach ($path in $paths) {
-              if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
-                  throw "PowerShell script not found: $path"
-              }
+          if ($scriptFiles.Count -eq 0) {
+              throw 'No PowerShell scripts were found under Win10/ or Win11/.'
+          }
 
+          foreach ($file in $scriptFiles) {
               $tokens = $null
               $parseErrors = $null
               [void][System.Management.Automation.Language.Parser]::ParseFile(
-                  (Join-Path $PWD $path),
+                  $file.FullName,
                   [ref]$tokens,
                   [ref]$parseErrors
               )
@@ -46,8 +45,10 @@ jobs:
                   $details = $parseErrors | ForEach-Object {
                       '{0}:{1}: {2}' -f $_.Extent.StartLineNumber, $_.Extent.StartColumnNumber, $_.Message
                   }
-                  throw ("PowerShell syntax errors in {0}: {1}" -f $path, ($details -join '; '))
+                  throw ("PowerShell syntax errors in {0}: {1}" -f $file.FullName, ($details -join '; '))
               }
 
-              Write-Host "PowerShell syntax OK: $path"
+              Write-Host ("PowerShell syntax OK: {0}" -f $file.FullName)
           }
+
+          Write-Host ("Validated {0} PowerShell script(s)." -f $scriptFiles.Count)
