@@ -76,12 +76,12 @@ function Add-RegistryResult {
         [string]$Category = 'WindowsSecurity'
     )
 
-    if (-not (Test-Path -LiteralPath $Path)) {
-        Add-Result -Category $Category -Name $Name -Status 'INFO' -Value 'Key not present' -Details 'This is an inventory indicator, not proof that the related protection is disabled.'
-        return
-    }
-
     try {
+        if (-not (Test-Path -LiteralPath $Path -ErrorAction Stop)) {
+            Add-Result -Category $Category -Name $Name -Status 'INFO' -Value 'Key not present' -Details 'This is an inventory indicator, not proof that the related protection is disabled.'
+            return
+        }
+
         $item = Get-ItemProperty -LiteralPath $Path -Name $Property -ErrorAction Stop
         $value = $item.PSObject.Properties[$Property].Value
         Add-Result -Category $Category -Name $Name -Status 'INFO' -Value $value -Details 'Registry indicator only; effective policy and runtime state may differ.'
@@ -527,7 +527,6 @@ function Save-AuditReport {
     Write-Host $json
     Write-Host $csv
     Write-Host $txt
-    Add-Result -Category 'Reporting' -Name 'Report files' -Status 'PASS' -Value $base -Details 'Reports contain device, network and security posture information. Protect and sanitize them before sharing.'
 }
 
 if ($Mode -eq 'Apply' -or $Mode -eq 'Restore') {
