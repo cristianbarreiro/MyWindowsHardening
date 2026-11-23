@@ -1,0 +1,53 @@
+name: PowerShell syntax validation
+
+on:
+  pull_request:
+    paths:
+      - "Win10/**/*.ps1"
+      - "Win11/**/*.ps1"
+      - ".github/workflows/powershell-syntax-validation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  parse:
+    name: Parse baseline PowerShell scripts
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate PowerShell syntax
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $paths = @(
+              'Win10/Win10-Hardening-20261113.ps1',
+              'Win10/Network-Authentication/Outlook-NTLM-SMB-CVE-2026-124194/Windows-NTLM-SMB-Hardening.ps1',
+              'Win11/Win11-Hardening-20261119.ps1'
+          )
+
+          foreach ($path in $paths) {
+              if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
+                  throw "PowerShell script not found: $path"
+              }
+
+              $tokens = $null
+              $parseErrors = $null
+              [void][System.Management.Automation.Language.Parser]::ParseFile(
+                  (Join-Path $PWD $path),
+                  [ref]$tokens,
+                  [ref]$parseErrors
+              )
+
+              if ($parseErrors.Count -gt 0) {
+                  $details = $parseErrors | ForEach-Object {
+                      '{0}:{1}: {2}' -f $_.Extent.StartLineNumber, $_.Extent.StartColumnNumber, $_.Message
+                  }
+                  throw ("PowerShell syntax errors in {0}: {1}" -f $path, ($details -join '; '))
+              }
+
+              Write-Host "PowerShell syntax OK: $path"
+          }
