@@ -1,6 +1,6 @@
 # Win10-Hardening-20261113.ps1
 
-**Versión:** 0.1.0-bootstrap  
+**Versión:** 0.1.1-bootstrap  
 **Fecha inicial:** 13/11/2026  
 **Compatibilidad:** Windows 10 cliente, Windows PowerShell 5.1  
 **Estado:** auditoría de solo lectura.
@@ -24,7 +24,7 @@ Esta primera entrega establece el núcleo de inventario y reportes. No modifica 
 .\Win10-Hardening-20261113.ps1 -Mode Report -OutputDirectory 'D:\HardeningReports'
 ~~~
 
-Los informes JSON, CSV y TXT se guardan en Reports junto al script, salvo que se indique OutputDirectory.
+Los informes JSON, CSV y TXT se guardan en Reports junto al script, salvo que se indique OutputDirectory. Los nombres incluyen fracciones de segundo y un sufijo único para reducir colisiones entre ejecuciones próximas.
 
 ## Qué inspecciona
 
@@ -46,6 +46,7 @@ Los estados PASS, REVIEW, FAIL, ERROR, INFO y UNAVAILABLE describen comprobacion
 - Apply y Restore están bloqueados explícitamente.
 - No requiere elevación para ejecutar la auditoría.
 - No recopila contraseñas, claves, cookies ni contenido personal de archivos.
+- Los informes pueden incluir nombre del equipo, adaptadores, perfiles de red y configuración de seguridad. Guardarlos en una ubicación con permisos adecuados y revisar/sanitizar su contenido antes de publicarlos.
 
 ## Compatibilidad y límites
 
