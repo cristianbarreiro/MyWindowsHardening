@@ -104,7 +104,29 @@ Describe 'Agent and knowledge documentation contracts' {
                 }
 
                 $target = ($target -split '\s+', 2)[0].Trim('<', '>')
-                $target = $target -replace '[#?].*, ''
+                $target = $target -replace '[#?].*
+                if ([string]::IsNullOrWhiteSpace($target)) {
+                    continue
+                }
+
+                $candidatePath = if ($target.StartsWith('/')) {
+                    Join-Path $repositoryRoot $target.TrimStart('/')
+                }
+                else {
+                    Join-Path (Split-Path -Parent $file.FullName) $target
+                }
+
+                if (-not (Test-Path -LiteralPath $candidatePath)) {
+                    $invalidLinks.Add(('{0} -> {1}' -f $file.FullName, $target))
+                }
+            }
+        }
+
+        $invalidLinks | Should -BeNullOrEmpty
+    }
+
+}
+, ''
                 if ([string]::IsNullOrWhiteSpace($target)) {
                     continue
                 }
