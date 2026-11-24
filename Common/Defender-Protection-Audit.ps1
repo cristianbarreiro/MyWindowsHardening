@@ -23,6 +23,7 @@ $script:ScriptVersion = '0.1.0-readonly'
 $script:StartedAt = Get-Date
 $script:Results = New-Object System.Collections.Generic.List[object]
 $script:SystemInventoryFailed = $false
+$script:DefenderInventoryFailed = $false
 
 function Add-Result {
     param(
@@ -65,7 +66,7 @@ function Get-ObjectPropertyValue {
         return $null
     }
 
-    return $property.Value
+    return ,$property.Value
 }
 
 function Add-BooleanResult {
@@ -124,6 +125,11 @@ function Add-ProtectionModeResult {
         '1' { Add-Result 'DefenderPreferences' $DisplayName 'PASS' 'Enabled / Block' 'Get-MpPreference' 'Protection is enabled in enforcement mode.'; return }
         '2' { Add-Result 'DefenderPreferences' $DisplayName 'INFO' 'Audit' 'Get-MpPreference' 'Audit mode records detections but does not enforce the block.'; return }
         '0' { Add-Result 'DefenderPreferences' $DisplayName 'REVIEW' 'Disabled' 'Get-MpPreference' 'Protection is disabled.'; return }
+        '3' { Add-Result 'DefenderPreferences' $DisplayName 'INFO' 'Block disk modification only' 'Get-MpPreference' 'A limited enforcement mode is active; review its scope.'; return }
+        '4' { Add-Result 'DefenderPreferences' $DisplayName 'INFO' 'Audit disk modification only' 'Get-MpPreference' 'Audit-only limited mode; it does not provide full enforcement.'; return }
+        'Enabled' { Add-Result 'DefenderPreferences' $DisplayName 'PASS' 'Enabled / Block' 'Get-MpPreference' 'Protection is enabled in enforcement mode.'; return }
+        'AuditMode' { Add-Result 'DefenderPreferences' $DisplayName 'INFO' 'Audit' 'Get-MpPreference' 'Audit mode records detections but does not enforce the block.'; return }
+        'Disabled' { Add-Result 'DefenderPreferences' $DisplayName 'REVIEW' 'Disabled' 'Get-MpPreference' 'Protection is disabled.'; return }
         default { Add-Result 'DefenderPreferences' $DisplayName 'REVIEW' $value 'Get-MpPreference' 'Unknown or platform-specific mode; verify against the installed Defender version.' }
     }
 }
@@ -131,8 +137,10 @@ function Add-ProtectionModeResult {
 function Add-AsrRuleResults {
     param([object]$Preferences)
 
-    $ids = @(Get-ObjectPropertyValue -InputObject $Preferences -PropertyName 'AttackSurfaceReductionRules_Ids')
-    $actions = @(Get-ObjectPropertyValue -InputObject $Preferences -PropertyName 'AttackSurfaceReductionRules_Actions')
+    $ids = Get-ObjectPropertyValue -InputObject $Preferences -PropertyName 'AttackSurfaceReductionRules_Ids'
+    $actions = Get-ObjectPropertyValue -InputObject $Preferences -PropertyName 'AttackSurfaceReductionRules_Actions'
+    if ($null -eq $ids) { $ids = @() }
+    if ($null -eq $actions) { $actions = @() }
 
     if ($ids.Count -eq 0 -and $actions.Count -eq 0) {
         Add-Result 'ASR' 'Configured rules' 'INFO' 0 'Get-MpPreference' 'No configured ASR rule pairs were returned. This is not a recommendation to enable every rule.'
@@ -210,7 +218,7 @@ function Invoke-DefenderAudit {
         Add-Result 'System' 'DisplayVersion' 'INFO' $cv.DisplayVersion 'CurrentVersion'
         Add-Result 'System' 'Build' 'INFO' ('{0}.{1}' -f $build, $cv.UBR) 'CurrentVersion'
 
-        if ($os.ProductType -ne 1 -or $build -lt 10240 -or $build -ge 22000 -and $platform -ne 'Windows 11') {
+        if ($os.ProductType -ne 1 -or $build -lt 10240 -or $os.Caption -notmatch 'Windows 10|Windows 11') {
             Add-Result 'Compatibility' 'Windows client platform' 'FAIL' $false 'Win32_OperatingSystem' 'This auditor supports Windows 10/11 client editions only.'
             $script:SystemInventoryFailed = $true
         }
@@ -266,6 +274,7 @@ function Invoke-DefenderAudit {
         }
         catch {
             Add-Result 'Defender' 'Antimalware status query' 'ERROR' $null 'Get-MpComputerStatus' $_.Exception.Message
+            $script:DefenderInventoryFailed = $true
         }
     }
 
@@ -294,7 +303,12 @@ function Invoke-DefenderAudit {
                 @{ Property = 'SubmitSamplesConsent'; Name = 'Automatic sample submission preference' }
             )) {
                 $value = Get-ObjectPropertyValue -InputObject $preferences -PropertyName $item.Property
-                Add-Result 'DefenderPreferences' $item.Name 'INFO' $value 'Get-MpPreference' 'Informational privacy/configuration setting; no universal value is imposed.'
+                if ($null -eq $value) {
+                    Add-Result 'DefenderPreferences' $item.Name 'UNAVAILABLE' $null 'Get-MpPreference' 'Property is not exposed by this Defender version.'
+                }
+                else {
+                    Add-Result 'DefenderPreferences' $item.Name 'INFO' $value 'Get-MpPreference' 'Informational privacy/configuration setting; no universal value is imposed.'
+                }
             }
 
             Add-AsrRuleResults -Preferences $preferences
@@ -302,6 +316,7 @@ function Invoke-DefenderAudit {
         }
         catch {
             Add-Result 'DefenderPreferences' 'Preference inventory' 'ERROR' $null 'Get-MpPreference' $_.Exception.Message
+            $script:DefenderInventoryFailed = $true
         }
     }
 
@@ -372,8 +387,8 @@ try {
         Save-AuditReport -Directory $OutputDirectory
     }
 
-    if ($script:SystemInventoryFailed) {
-        Write-Warning 'System inventory failed or the platform is unsupported.'
+    if ($script:SystemInventoryFailed -or $script:DefenderInventoryFailed) {
+        Write-Warning 'System inventory failed or the Defender inventory was incomplete.'
         exit 1
     }
     exit 0
