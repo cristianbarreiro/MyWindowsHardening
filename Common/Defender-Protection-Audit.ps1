@@ -121,12 +121,19 @@ function Add-ProtectionModeResult {
         return
     }
 
+    if ($PropertyName -eq 'EnableControlledFolderAccess' -and [string]$value -eq '3') {
+        Add-Result 'DefenderPreferences' $DisplayName 'INFO' 'Block disk modification only' 'Get-MpPreference' 'A limited enforcement mode is active; review its scope.'
+        return
+    }
+    if ($PropertyName -eq 'EnableControlledFolderAccess' -and [string]$value -eq '4') {
+        Add-Result 'DefenderPreferences' $DisplayName 'INFO' 'Audit disk modification only' 'Get-MpPreference' 'Audit-only limited mode; it does not provide full enforcement.'
+        return
+    }
+
     switch ([string]$value) {
         '1' { Add-Result 'DefenderPreferences' $DisplayName 'PASS' 'Enabled / Block' 'Get-MpPreference' 'Protection is enabled in enforcement mode.'; return }
         '2' { Add-Result 'DefenderPreferences' $DisplayName 'INFO' 'Audit' 'Get-MpPreference' 'Audit mode records detections but does not enforce the block.'; return }
         '0' { Add-Result 'DefenderPreferences' $DisplayName 'REVIEW' 'Disabled' 'Get-MpPreference' 'Protection is disabled.'; return }
-        '3' { Add-Result 'DefenderPreferences' $DisplayName 'INFO' 'Block disk modification only' 'Get-MpPreference' 'A limited enforcement mode is active; review its scope.'; return }
-        '4' { Add-Result 'DefenderPreferences' $DisplayName 'INFO' 'Audit disk modification only' 'Get-MpPreference' 'Audit-only limited mode; it does not provide full enforcement.'; return }
         'Enabled' { Add-Result 'DefenderPreferences' $DisplayName 'PASS' 'Enabled / Block' 'Get-MpPreference' 'Protection is enabled in enforcement mode.'; return }
         'AuditMode' { Add-Result 'DefenderPreferences' $DisplayName 'INFO' 'Audit' 'Get-MpPreference' 'Audit mode records detections but does not enforce the block.'; return }
         'Disabled' { Add-Result 'DefenderPreferences' $DisplayName 'REVIEW' 'Disabled' 'Get-MpPreference' 'Protection is disabled.'; return }
