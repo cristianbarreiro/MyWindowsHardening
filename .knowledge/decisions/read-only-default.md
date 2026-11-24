@@ -8,16 +8,16 @@ generated:
   at: 2026-11-24T19:16:00Z
 sources:
   - id: read-only-baseline
-    resource: ../../Win10/BASELINE.md
+    resource: https://github.com/cristianbarreiro/MyWindowsHardening/blob/main/Win10/BASELINE.md
     title: Windows 10 baseline safety guarantees
   - id: win11-baseline
-    resource: ../../Win11/README.md
+    resource: https://github.com/cristianbarreiro/MyWindowsHardening/blob/main/Win11/README.md
     title: Windows 11 baseline safety guarantees
   - id: server-audit
-    resource: ../../WinServer/README.md
+    resource: https://github.com/cristianbarreiro/MyWindowsHardening/blob/main/WinServer/README.md
     title: Windows Server auditor limits
   - id: repository-contract
-    resource: ../../AGENTS.md
+    resource: https://github.com/cristianbarreiro/MyWindowsHardening/blob/main/AGENTS.md
     title: Canonical repository safety policy
 ---
 
