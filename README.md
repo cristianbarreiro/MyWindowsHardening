@@ -39,6 +39,8 @@ MyWindowsHardening/
 ├── .agents/
 │   ├── rules/
 │   └── skills/
+├── .cursor/
+│   └── rules/
 ├── .knowledge/
 │   ├── index.md
 │   ├── log.md
@@ -83,6 +85,7 @@ Este repositorio mantiene una sola fuente de reglas y conocimiento, compartida e
 - **[.knowledge/index.md](./.knowledge/index.md)** — contexto del proyecto en Open Knowledge Format (OKF) v0.2, con fuentes, estado de vigencia y procedencia.
 - **[.agents/skills/README.md](./.agents/skills/README.md)** — skills reutilizables para investigar Windows, diseñar cambios seguros, validar PowerShell y mantener el conocimiento.
 - **[.agents/rules/](./.agents/rules/)** — reglas de Antigravity para seguridad, PowerShell y contexto.
+- **[.cursor/rules/](./.cursor/rules/)** — reglas de Cursor Project Rules, usando archivos `.mdc`.
 - **[.github/copilot-instructions.md](./.github/copilot-instructions.md)** y **[.github/instructions/](./.github/instructions/)** — instrucciones de Copilot generales y por tipo de archivo.
 - **[CLAUDE.md](./CLAUDE.md)** y **[GEMINI.md](./GEMINI.md)** — archivos de entrada ligeros que derivan a las reglas canónicas.
 
