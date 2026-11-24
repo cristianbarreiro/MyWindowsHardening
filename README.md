@@ -37,9 +37,9 @@ MyWindowsHardening/
 | [Windows 10 22H2 (19045)](./Win10/README.md) | [Autenticación de red](./Win10/Network-Authentication/README.md) | [Outlook, NTLM y SMB — CVE-2026-124194](./Win10/Network-Authentication/Outlook-NTLM-SMB-CVE-2026-124194/README.md) | Primera implementación publicada |
 | [Windows 10 22H2 (19045)](./Win10/README.md) | [Aislamiento de virtualización](./Win10/Virtualization-Isolation/README.md) | [VirtualBox — aislamiento de Kali](./Win10/Virtualization-Isolation/VirtualBox-Kali-Host-Isolation/README.md) | Configuración aplicada y validada en un equipo |
 | [Windows 11](./Win11/README.md) | Autenticación de red | [Outlook / NTLM / SMB](./Win11/Network-Authentication/Outlook-NTLM-SMB-CVE-2026-124194/README.md) | Diseño y auditoría documentados; Apply/Restore pendiente |
-| [Windows 11](./Win11/README.md) | Aislamiento de virtualización | [VirtualBox — Kali Host Isolation](./Win11/Virtualization-Isolation/VirtualBox-Kali-Host-Isolation/README.md) | Diseño documentado; validación práctica pendiente |
+| [Windows 11](./Win11/README.md) | Aislamiento de virtualización | [VirtualBox — Kali Host Isolation](./Win11/Virtualization-Isolation/VirtualBox-Kali-Host-Isolation/README.md) | Diseño documentado; validación práctica pendiente |\n| [Windows Server](./WinServer/README.md) | Baseline empresarial | [Auditoría de roles y postura del servidor](./WinServer/WinServer-Hardening-20261121.ps1) | Auditoría inicial de solo lectura |
 
-## Reglas del repositorio
+## Auditorías compartidas\n\nEl auditor [Defender-Protection-Audit.ps1](./Common/Defender-Protection-Audit.ps1) sirve para Windows 10 y Windows 11. Inspecciona las protecciones antivirus, ASR, Controlled Folder Access, Network Protection y exclusiones sin modificar la configuración. Ver [documentación](./Common/README.md).\n\n## Reglas del repositorio
 1. No reutilizar un script de Windows 10 en Windows 11 —ni a la inversa— sin verificar cmdlets, políticas, valores predeterminados y comportamiento.
 2. Mantener los perfiles acotados: NTLM/SMB no es hardening general, y aislamiento de VM no equivale a un sandbox absoluto.
 3. Auditar antes de aplicar y conservar una copia de la configuración previa.
