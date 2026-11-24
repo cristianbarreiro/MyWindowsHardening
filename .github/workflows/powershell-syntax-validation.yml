@@ -10,6 +10,8 @@ on:
       - "Tests/**/*.ps1"
       - "**/*.md"
       - ".agents/**"
+      - ".cursor/**"
+      - ".cursor/**"
       - ".knowledge/**"
       - ".github/**"
       - ".gitignore"
