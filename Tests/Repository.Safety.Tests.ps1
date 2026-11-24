@@ -68,6 +68,7 @@ Describe 'PowerShell repository safety' {
         $content | Should -Match 'Restore-Baseline -Path \$backupDirectory'
         $content | Should -Match 'Rollback ejecutado y verificado'
         $content | Should -Match 'Assert-HardeningApplied'
+        $content | Should -Match 'Assert-BaselineSupportsRollback'
         $content | Should -Match 'Test-ManagedFirewallRule'
         $content | Should -Match 'Restore incompleto o no verificado'
         $content | Should -Match 'Hay varios backups'
