@@ -9,13 +9,13 @@ generated:
 stale_after: 2027-02-22T00:00:00Z
 sources:
   - id: root-readme
-    resource: ../README.md
+    resource: https://github.com/cristianbarreiro/MyWindowsHardening/blob/main/README.md
     title: Repository README
   - id: agent-contract
-    resource: ../AGENTS.md
+    resource: https://github.com/cristianbarreiro/MyWindowsHardening/blob/main/AGENTS.md
     title: Canonical coding-agent contract
   - id: quality-workflow
-    resource: ../.github/workflows/powershell-syntax-validation.yml
+    resource: https://github.com/cristianbarreiro/MyWindowsHardening/blob/main/.github/workflows/powershell-syntax-validation.yml
     title: GitHub Actions PowerShell quality workflow
 ---
 
