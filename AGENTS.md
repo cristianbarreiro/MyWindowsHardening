@@ -83,3 +83,4 @@ The repository's tested automation targets Windows PowerShell 5.1 on `windows-20
 - [Safe hardening design skill](.agents/skills/design-safe-hardening-change/SKILL.md)
 - [Windows research skill](.agents/skills/research-windows-platform/SKILL.md)
 - [PowerShell validation skill](.agents/skills/powershell-validation/SKILL.md)
+- [Cursor Project Rules](.cursor/rules/)
