@@ -27,7 +27,11 @@ Referencias:
 
 El baseline general no sustituye los perfiles especializados ni los ejecuta automáticamente. Su función es inventariar y producir informes sin cambiar la configuración del equipo. Los informes contienen datos del dispositivo, adaptadores y postura de seguridad; protegé los archivos y sanealos antes de compartirlos.
 
-## Auditoría Microsoft Defender\n\nTambién se puede ejecutar el auditor compartido de Windows 10/11: [Defender-Protection-Audit.ps1](../Common/Defender-Protection-Audit.ps1). Es estrictamente de solo lectura e inventaría antivirus, ASR, Controlled Folder Access, Network Protection y exclusiones. No aplica ni modifica reglas. Consultá [su documentación](../Common/README.md).\n\n## Perfiles disponibles
+## Auditoría Microsoft Defender
+
+También se puede ejecutar el auditor compartido de Windows 10/11: [Defender-Protection-Audit.ps1](../Common/Defender-Protection-Audit.ps1). Es estrictamente de solo lectura e inventaría antivirus, ASR, Controlled Folder Access, Network Protection y exclusiones. No aplica ni modifica reglas. Consultá [su documentación](../Common/README.md).
+
+## Perfiles disponibles
 
 | Dominio | Carpeta / perfil | Objetivo |
 |---|---|---|
