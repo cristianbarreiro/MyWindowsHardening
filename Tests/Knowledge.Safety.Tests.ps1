@@ -75,4 +75,54 @@ Describe 'Agent and knowledge documentation contracts' {
             }
         }
     }
+
+    It 'internal Markdown links in agent and knowledge docs resolve' {
+        $documentationFiles = @(
+            Get-ChildItem -LiteralPath $knowledgeRoot -Filter '*.md' -Recurse -File
+            Get-ChildItem -LiteralPath $skillsRoot -Filter '*.md' -Recurse -File
+            Get-ChildItem -LiteralPath $rulesRoot -Filter '*.md' -File
+            Get-Item -LiteralPath (Join-Path $repositoryRoot 'AGENTS.md')
+            Get-Item -LiteralPath (Join-Path $repositoryRoot 'CLAUDE.md')
+            Get-Item -LiteralPath (Join-Path $repositoryRoot 'GEMINI.md')
+            Get-Item -LiteralPath (Join-Path $repositoryRoot 'README.md')
+            Get-Item -LiteralPath (Join-Path $repositoryRoot 'CONTRIBUTING.md')
+            Get-Item -LiteralPath (Join-Path $repositoryRoot 'SECURITY.md')
+            Get-Item -LiteralPath (Join-Path $repositoryRoot 'docs/AI-AGENTS.md')
+            Get-Item -LiteralPath (Join-Path $repositoryRoot '.github/copilot-instructions.md')
+            Get-ChildItem -LiteralPath (Join-Path $repositoryRoot '.github/instructions') -Filter '*.md' -File
+        )
+
+        $invalidLinks = New-Object System.Collections.Generic.List[string]
+        foreach ($file in $documentationFiles) {
+            $content = Get-Content -LiteralPath $file.FullName -Raw
+            $linkMatches = [regex]::Matches($content, '(?<!!)\[[^\]]+\]\((?<target>[^)]+)\)')
+
+            foreach ($linkMatch in $linkMatches) {
+                $target = $linkMatch.Groups['target'].Value.Trim()
+                if ($target -match '^(?:[a-z][a-z0-9+.-]*:|#)') {
+                    continue
+                }
+
+                $target = ($target -split '\s+', 2)[0].Trim('<', '>')
+                $target = $target -replace '[#?].*, ''
+                if ([string]::IsNullOrWhiteSpace($target)) {
+                    continue
+                }
+
+                $candidatePath = if ($target.StartsWith('/')) {
+                    Join-Path $repositoryRoot $target.TrimStart('/')
+                }
+                else {
+                    Join-Path (Split-Path -Parent $file.FullName) $target
+                }
+
+                if (-not (Test-Path -LiteralPath $candidatePath)) {
+                    $invalidLinks.Add(('{0} -> {1}' -f $file.FullName, $target))
+                }
+            }
+        }
+
+        $invalidLinks | Should -BeNullOrEmpty
+    }
+
 }
