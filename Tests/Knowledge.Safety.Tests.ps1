@@ -4,15 +4,12 @@ Describe 'Agent and knowledge documentation contracts' {
         $knowledgeRoot = Join-Path $repositoryRoot '.knowledge'
         $skillsRoot = Join-Path $repositoryRoot '.agents/skills'
         $rulesRoot = Join-Path $repositoryRoot '.agents/rules'
+        $cursorRulesRoot = Join-Path $repositoryRoot '.cursor/rules'
 
-        if (-not (Test-Path -LiteralPath $knowledgeRoot -PathType Container)) {
-            throw 'The .knowledge bundle is required.'
-        }
-        if (-not (Test-Path -LiteralPath $skillsRoot -PathType Container)) {
-            throw 'The portable .agents/skills directory is required.'
-        }
-        if (-not (Test-Path -LiteralPath $rulesRoot -PathType Container)) {
-            throw 'The Antigravity .agents/rules directory is required.'
+        foreach ($requiredDirectory in @($knowledgeRoot, $skillsRoot, $rulesRoot, $cursorRulesRoot)) {
+            if (-not (Test-Path -LiteralPath $requiredDirectory -PathType Container)) {
+                throw ("Required agent documentation directory is missing: {0}" -f $requiredDirectory)
+            }
         }
 
         $conceptFiles = @(
@@ -21,6 +18,7 @@ Describe 'Agent and knowledge documentation contracts' {
         )
         $skillFiles = @(Get-ChildItem -LiteralPath $skillsRoot -Filter 'SKILL.md' -Recurse -File)
         $ruleFiles = @(Get-ChildItem -LiteralPath $rulesRoot -Filter '*.md' -File)
+        $cursorRuleFiles = @(Get-ChildItem -LiteralPath $cursorRulesRoot -Filter '*.mdc' -File)
     }
 
     It 'the bundle root declares the pinned OKF version' {
@@ -82,11 +80,30 @@ Describe 'Agent and knowledge documentation contracts' {
         }
     }
 
+    It 'every Cursor Project Rule declares description and application metadata' {
+        $cursorRuleFiles.Count | Should -BeGreaterThan 0
+
+        foreach ($file in $cursorRuleFiles) {
+            $content = Get-Content -LiteralPath $file.FullName -Raw
+            $frontmatterMatch = [regex]::Match($content, '(?s)\A---\r?\n(.*?)\r?\n---(?:\r?\n|$)')
+            $frontmatterMatch.Success | Should -BeTrue
+
+            if ($frontmatterMatch.Success) {
+                $frontmatter = $frontmatterMatch.Groups[1].Value
+                [regex]::IsMatch($frontmatter, '(?m)^description:\s*\S') | Should -BeTrue
+                $alwaysApply = [regex]::IsMatch($frontmatter, '(?m)^alwaysApply:\s*true\s*$')
+                $hasGlobs = [regex]::IsMatch($frontmatter, '(?m)^globs:\s*\S')
+                ($alwaysApply -or $hasGlobs) | Should -BeTrue
+            }
+        }
+    }
+
     It 'internal Markdown links in agent and knowledge docs resolve' {
         $documentationFiles = @(
             Get-ChildItem -LiteralPath $knowledgeRoot -Filter '*.md' -Recurse -File
             Get-ChildItem -LiteralPath $skillsRoot -Filter '*.md' -Recurse -File
             Get-ChildItem -LiteralPath $rulesRoot -Filter '*.md' -File
+            Get-ChildItem -LiteralPath $cursorRulesRoot -Filter '*.mdc' -File
             Get-Item -LiteralPath (Join-Path $repositoryRoot 'AGENTS.md')
             Get-Item -LiteralPath (Join-Path $repositoryRoot 'CLAUDE.md')
             Get-Item -LiteralPath (Join-Path $repositoryRoot 'GEMINI.md')
