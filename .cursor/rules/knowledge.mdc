@@ -1,0 +1,14 @@
+---
+description: Open Knowledge Format research, provenance and freshness requirements.
+globs: ".knowledge/**/*.md"
+---
+
+# OKF knowledge rules
+
+- Follow the pinned Open Knowledge Format v0.2 specification linked from `.knowledge/sources/okf-specification.md`.
+- Every non-reserved concept must have YAML frontmatter with a non-empty `type`.
+- Attribute individual claims using stable `sources[].id` values and Markdown footnotes.
+- Prefer current primary sources; record retrieval dates and exact product/version applicability.
+- Keep `generated`, `verified`, `status` and `stale_after` truthful. Never invent human review or source metadata.
+- Update the nearest `index.md` and `.knowledge/log.md` when changing bundle content.
+- See `.agents/skills/maintain-okf-knowledge/SKILL.md`.
