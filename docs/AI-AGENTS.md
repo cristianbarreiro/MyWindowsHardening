@@ -20,6 +20,7 @@ The `.knowledge/` folder is a local, version-controlled knowledge bundle. Its so
 | General coding agents and OpenAI Codex-style agents | Root `AGENTS.md` | Tool-agnostic canonical rules and onboarding |
 | Google Antigravity / Gemini | Root `AGENTS.md`, `GEMINI.md`, `.agents/rules/*.md`, `.agents/skills/*/SKILL.md` | Workspace rules and portable skills |
 | GitHub Copilot | `.github/copilot-instructions.md`, `.github/instructions/*.instructions.md`, root `AGENTS.md`, `.agents/skills/*/SKILL.md` | Repository-wide and file-scoped instructions, skills |
+| Cursor | Root `AGENTS.md`, `.cursor/rules/*.mdc`, `.agents/skills/*/SKILL.md` | Canonical instructions, scoped Project Rules and portable skills |
 | Claude Code | Root `CLAUDE.md`, `.agents/skills/*/SKILL.md` | Entry point delegates to canonical rules |
 | Other tools | `AGENTS.md` and the shared `.agents/skills/` directory where supported | Use the canonical instruction file; configure a small adapter only when a tool requires a different discovery path |
 
@@ -27,7 +28,7 @@ Tool support changes over time. Verify each product's official documentation bef
 
 ## Rules vs. skills vs. knowledge
 
-- **Rules** are persistent constraints: safe defaults, platform boundaries and invariants. They belong in `AGENTS.md` and scoped Antigravity rules.
+- **Rules** are persistent constraints: safe defaults, platform boundaries and invariants. They belong in `AGENTS.md` and scoped tool adapters such as Antigravity rules, Cursor Project Rules and Copilot instructions.
 - **Skills** are reusable, task-specific workflows that agents load when relevant: research, hardening design, PowerShell validation and OKF maintenance.
 - **OKF concepts** are the factual project memory: architecture, profile state, evidence, sources, decisions, lifecycle and provenance.
 - **Prompts** are task templates, not durable policy. Do not store essential safety requirements only in a prompt.
@@ -62,4 +63,6 @@ An agent should not assume that repository documents are current merely because 
 - [GitHub Copilot agent skills](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/add-skills)
 - [Google Antigravity rules](https://antigravity.google/docs/rules/)
 - [Google Antigravity skills](https://antigravity.google/docs/skills/)
+- [Cursor Project Rules](https://cursor.com/docs/rules)
+- [Cursor Agent Skills](https://cursor.com/docs/skills)
 - [Open Knowledge Format v0.2](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md)
