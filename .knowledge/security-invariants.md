@@ -9,13 +9,13 @@ generated:
 stale_after: 2027-02-22T00:00:00Z
 sources:
   - id: agent-contract
-    resource: ../AGENTS.md
+    resource: https://github.com/cristianbarreiro/MyWindowsHardening/blob/main/AGENTS.md
     title: Canonical agent safety contract
   - id: ntlm-profile
-    resource: ../Win10/Network-Authentication/Outlook-NTLM-SMB-CVE-2026-124194/README.md
+    resource: https://github.com/cristianbarreiro/MyWindowsHardening/blob/main/Win10/Network-Authentication/Outlook-NTLM-SMB-CVE-2026-124194/README.md
     title: Windows 10 NTLM/SMB profile operating and rollback documentation
   - id: defender-audit
-    resource: ../Common/README.md
+    resource: https://github.com/cristianbarreiro/MyWindowsHardening/blob/main/Common/README.md
     title: Shared Defender audit scope and limitations
 ---
 
