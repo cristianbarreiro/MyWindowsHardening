@@ -1,0 +1,12 @@
+# Local security posture reports and backups
+**/Reports/
+**/*-Audit-*.json
+**/*-Audit-*.csv
+**/*-Audit-*.txt
+**/WindowsNTLMHardening/
+
+# Test/build artifacts
+TestResults/
+*.trx
+*.wfw
+*.log

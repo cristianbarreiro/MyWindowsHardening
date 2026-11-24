@@ -34,6 +34,10 @@ Windows 11 Enterprise LTSC 2024 tiene fecha de fin de actualizaciones 09/10/2029
 
 El script diferencia la compatibilidad técnica de la vigencia de mantenimiento y marca como REVIEW cualquier combinación de versión/edición sin una asignación conocida. La matriz puede cambiar; consultar siempre [Windows 11 release information](https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information) antes de tomar decisiones.
 
+## Auditoría Microsoft Defender
+
+El auditor compartido [Defender-Protection-Audit.ps1](../Common/Defender-Protection-Audit.ps1) también admite Windows 11. Es de solo lectura e incluye estado antivirus, ASR, Controlled Folder Access, Network Protection y recuento de exclusiones. No habilita ni modifica controles. Consultá [su documentación](../Common/README.md).
+
 ## Perfiles especializados
 
 | Dominio | Perfil | Estado |
