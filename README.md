@@ -8,7 +8,12 @@ La idea del repositorio es evitar que un único script genérico mezcle controle
 
 ~~~text
 MyWindowsHardening/
+├── AGENTS.md
+├── CLAUDE.md
+├── GEMINI.md
 ├── README.md
+├── CONTRIBUTING.md
+├── SECURITY.md
 ├── Common/
 │   ├── README.md
 │   └── Defender-Protection-Audit.ps1
@@ -27,9 +32,25 @@ MyWindowsHardening/
 │   ├── README.md
 │   └── WinServer-Hardening-20261121.ps1
 ├── Tests/
-│   └── Repository.Safety.Tests.ps1
-└── .github/workflows/
-    └── powershell-syntax-validation.yml
+│   ├── Repository.Safety.Tests.ps1
+│   └── Knowledge.Safety.Tests.ps1
+├── docs/
+│   └── AI-AGENTS.md
+├── .agents/
+│   ├── rules/
+│   └── skills/
+├── .cursor/
+│   └── rules/
+├── .knowledge/
+│   ├── index.md
+│   ├── log.md
+│   ├── decisions/
+│   └── sources/
+└── .github/
+    ├── copilot-instructions.md
+    ├── instructions/
+    └── workflows/
+        └── powershell-syntax-validation.yml
 ~~~
 
 ## Baselines generales
@@ -55,6 +76,21 @@ MyWindowsHardening/
 
 El auditor [Defender-Protection-Audit.ps1](./Common/Defender-Protection-Audit.ps1) sirve para Windows 10 y Windows 11. Inspecciona las protecciones antivirus, ASR, Controlled Folder Access, Network Protection y exclusiones sin modificar la configuración. Los informes omiten los paths de exclusión y guardan únicamente sus cantidades. Ver [documentación](./Common/README.md).
 
+## Instrucciones para agentes de IA
+
+Este repositorio mantiene una sola fuente de reglas y conocimiento, compartida entre agentes y herramientas:
+
+- **[AGENTS.md](./AGENTS.md)** — contrato canónico para agentes de programación: seguridad, arquitectura, flujos de trabajo y validación.
+- **[docs/AI-AGENTS.md](./docs/AI-AGENTS.md)** — onboarding y compatibilidad de herramientas.
+- **[.knowledge/index.md](./.knowledge/index.md)** — contexto del proyecto en Open Knowledge Format (OKF) v0.2, con fuentes, estado de vigencia y procedencia.
+- **[.agents/skills/README.md](./.agents/skills/README.md)** — skills reutilizables para investigar Windows, diseñar cambios seguros, validar PowerShell y mantener el conocimiento.
+- **[.agents/rules/](./.agents/rules/)** — reglas de Antigravity para seguridad, PowerShell y contexto.
+- **[.cursor/rules/](./.cursor/rules/)** — reglas de Cursor Project Rules, usando archivos `.mdc`.
+- **[.github/copilot-instructions.md](./.github/copilot-instructions.md)** y **[.github/instructions/](./.github/instructions/)** — instrucciones de Copilot generales y por tipo de archivo.
+- **[CLAUDE.md](./CLAUDE.md)** y **[GEMINI.md](./GEMINI.md)** — archivos de entrada ligeros que derivan a las reglas canónicas.
+
+Para agregar o modificar controles, seguir [CONTRIBUTING.md](./CONTRIBUTING.md). Las instrucciones específicas de agentes complementan, pero no pueden contradecir, `AGENTS.md`.
+
 ## Reglas del repositorio
 
 1. No reutilizar un script de Windows 10 en Windows 11 —ni a la inversa— sin verificar cmdlets, políticas, valores predeterminados y comportamiento.
@@ -68,7 +104,7 @@ El auditor [Defender-Protection-Audit.ps1](./Common/Defender-Protection-Audit.ps
 
 ## Calidad y validación
 
-El workflow de PowerShell analiza los scripts de Common, Win10, Win11, WinServer y Tests con Windows PowerShell 5.1. Ejecuta PSScriptAnalyzer y las pruebas de seguridad de Pester. Los resultados de sintaxis no sustituyen pruebas funcionales en equipos reales.
+El workflow de PowerShell analiza los scripts de Common, Win10, Win11, WinServer y Tests con Windows PowerShell 5.1. Ejecuta PSScriptAnalyzer y las pruebas de seguridad de Pester. También valida los contratos básicos de documentación de agentes, skills y OKF. Los resultados de sintaxis y tests estáticos no sustituyen pruebas funcionales en equipos Windows reales.
 
 ## Aviso
 

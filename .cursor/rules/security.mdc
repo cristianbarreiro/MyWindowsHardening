@@ -1,0 +1,16 @@
+---
+description: Always-on security and rollback invariants for the MyWindowsHardening repository.
+alwaysApply: true
+---
+
+# Repository security invariants
+
+Read `AGENTS.md` as the canonical repository contract. This rule reinforces its most important constraints:
+
+- Keep general Windows 10/11/Server baselines and Defender inventory read-only.
+- Never execute Apply/Restore or mutate firewall, services, Registry, Defender, BitLocker, adapters or VirtualBox on the Cursor/agent host.
+- Treat Windows 10, Windows 11 and Windows Server roles/builds as separate targets.
+- Require explicit scope, supported build/edition, preflight, exact backup, idempotence, object ownership, rollback, post-change verification and tests for every mutation.
+- Never weaken core protections or overwrite GPO/MDM/third-party managed state to make a test pass.
+- Use primary-source evidence and the OKF v0.2 bundle under `.knowledge/`; do not claim runtime validation from static CI.
+- Follow `AGENTS.md` and the relevant `.agents/skills/` workflow. This file must not override the canonical policy.

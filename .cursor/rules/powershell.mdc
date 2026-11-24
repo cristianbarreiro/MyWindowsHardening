@@ -1,0 +1,14 @@
+---
+description: PowerShell 5.1 coding, test and safe mutation requirements for MyWindowsHardening scripts.
+globs: "**/*.ps1"
+---
+
+# PowerShell rules
+
+- Preserve Windows PowerShell 5.1 compatibility unless the owning profile explicitly defines another runtime.
+- Keep Audit, Validate and Report strictly read-only.
+- Never run Apply/Restore on the agent host.
+- Detect cmdlet and parameter availability and fail before mutation when a required precondition is not met.
+- Preserve ownership and exact prior state; do not remove foreign firewall rules.
+- Add safe Pester regression tests. Validate using the Windows PowerShell 5.1 parser, PSScriptAnalyzer and Pester.
+- For any mutation, load `.agents/skills/design-safe-hardening-change/SKILL.md`.
