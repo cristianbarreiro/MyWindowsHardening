@@ -38,6 +38,7 @@ Describe 'PowerShell repository safety' {
 
     It 'the shared Defender audit contains no system-configuration commands' {
         $defenderPath = Join-Path $repositoryRoot 'Common/Defender-Protection-Audit.ps1'
+        Test-Path -LiteralPath $defenderPath -PathType Leaf | Should -BeTrue
         $tokens = $null
         $parseErrors = $null
         $ast = [System.Management.Automation.Language.Parser]::ParseFile(
@@ -66,6 +67,7 @@ Describe 'PowerShell repository safety' {
 
     It 'NTLM Apply has a verified rollback path and Restore protects foreign firewall rules' {
         $ntlmPath = Join-Path $repositoryRoot 'Win10/Network-Authentication/Outlook-NTLM-SMB-CVE-2026-124194/Windows-NTLM-SMB-Hardening.ps1'
+        Test-Path -LiteralPath $ntlmPath -PathType Leaf | Should -BeTrue
         $content = Get-Content -LiteralPath $ntlmPath -Raw
 
         $content | Should -Match 'Restore-Baseline -Path \$backupDirectory'
@@ -75,6 +77,9 @@ Describe 'PowerShell repository safety' {
         $content | Should -Match 'Test-ManagedFirewallRule'
         $content | Should -Match 'Restore incompleto o no verificado'
         $content | Should -Match 'Hay varios backups'
+        $content | Should -Match 'param\(\[string\]\$Path = \$BackupPath\)'
+        $content | Should -Match '\$existingRules = @\(Get-NetFirewallRule'
+        $content | Should -Not -Match '\$matches\s*='
     }
 
     It 'general platform baselines keep Apply and Restore blocked' {
@@ -86,6 +91,7 @@ Describe 'PowerShell repository safety' {
 
         foreach ($relativePath in $baselinePaths) {
             $path = Join-Path $repositoryRoot $relativePath
+            Test-Path -LiteralPath $path -PathType Leaf | Should -BeTrue
             $content = Get-Content -LiteralPath $path -Raw
             $content | Should -Match 'if\s*\(\$Mode\s+-eq\s+\x27Apply\x27\s+-or\s+\$Mode\s+-eq\s+\x27Restore\x27\)'
         }
