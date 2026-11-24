@@ -1,6 +1,6 @@
 Describe 'Agent and knowledge documentation contracts' {
     BeforeAll {
-        $repositoryRoot = (Get-Location).Path
+        $repositoryRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
         $knowledgeRoot = Join-Path $repositoryRoot '.knowledge'
         $skillsRoot = Join-Path $repositoryRoot '.agents/skills'
         $rulesRoot = Join-Path $repositoryRoot '.agents/rules'
@@ -98,6 +98,24 @@ Describe 'Agent and knowledge documentation contracts' {
         }
     }
 
+    It 'rejects normalized paths outside the repository root' {
+        $normalizedRoot = [System.IO.Path]::GetFullPath($repositoryRoot).TrimEnd(
+            [System.IO.Path]::DirectorySeparatorChar,
+            [System.IO.Path]::AltDirectorySeparatorChar
+        )
+        $rootPrefix = $normalizedRoot + [System.IO.Path]::DirectorySeparatorChar
+        $outsidePath = [System.IO.Path]::GetFullPath((Join-Path (Join-Path $repositoryRoot '..') 'outside.md'))
+        $isInsideRepository = $outsidePath.Equals(
+            $normalizedRoot,
+            [System.StringComparison]::OrdinalIgnoreCase
+        ) -or $outsidePath.StartsWith(
+            $rootPrefix,
+            [System.StringComparison]::OrdinalIgnoreCase
+        )
+
+        $isInsideRepository | Should -BeFalse
+    }
+
     It 'internal Markdown links in agent and knowledge docs resolve' {
         $documentationFiles = @(
             Get-ChildItem -LiteralPath $knowledgeRoot -Filter '*.md' -Recurse -File
@@ -139,7 +157,33 @@ Describe 'Agent and knowledge documentation contracts' {
                     Join-Path (Split-Path -Parent $file.FullName) $target
                 }
 
-                if (-not (Test-Path -LiteralPath $candidatePath)) {
+                $resolvedCandidate = $null
+                try {
+                    $resolvedCandidate = (Resolve-Path -LiteralPath $candidatePath -ErrorAction Stop).Path
+                }
+                catch {
+                    $resolvedCandidate = $null
+                }
+
+                $normalizedRoot = [System.IO.Path]::GetFullPath($repositoryRoot).TrimEnd(
+                    [System.IO.Path]::DirectorySeparatorChar,
+                    [System.IO.Path]::AltDirectorySeparatorChar
+                )
+                $rootPrefix = $normalizedRoot + [System.IO.Path]::DirectorySeparatorChar
+                $isInsideRepository = $false
+
+                if ($resolvedCandidate) {
+                    $normalizedCandidate = [System.IO.Path]::GetFullPath($resolvedCandidate)
+                    $isInsideRepository = $normalizedCandidate.Equals(
+                        $normalizedRoot,
+                        [System.StringComparison]::OrdinalIgnoreCase
+                    ) -or $normalizedCandidate.StartsWith(
+                        $rootPrefix,
+                        [System.StringComparison]::OrdinalIgnoreCase
+                    )
+                }
+
+                if (-not $isInsideRepository) {
                     $invalidLinks.Add(('{0} -> {1}' -f $file.FullName, $target))
                 }
             }
