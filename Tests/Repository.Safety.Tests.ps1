@@ -79,7 +79,7 @@ Describe 'PowerShell repository safety' {
         foreach ($relativePath in $baselinePaths) {
             $path = Join-Path $repositoryRoot $relativePath
             $content = Get-Content -LiteralPath $path -Raw
-            $content | Should -Match "if\s*\(\$Mode\s+-eq\s+'Apply'\s+-or\s+\$Mode\s+-eq\s+'Restore'\)"
+            $content | Should -Match 'if\s*\(\$Mode\s+-eq\s+\x27Apply\x27\s+-or\s+\$Mode\s+-eq\s+\x27Restore\x27\)'
         }
     }
 }
