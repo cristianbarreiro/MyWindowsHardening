@@ -1,18 +1,21 @@
-$repositoryRoot = (Get-Location).Path
-if (-not (Test-Path -LiteralPath (Join-Path $repositoryRoot 'README.md') -PathType Leaf)) {
-    throw 'Run the Pester suite from the repository root so repository paths resolve correctly.'
-}
-$scriptRoots = @('Common', 'Win10', 'Win11', 'WinServer')
-$scriptFiles = @(
-    foreach ($root in $scriptRoots) {
-        $fullRoot = Join-Path $repositoryRoot $root
-        if (Test-Path -LiteralPath $fullRoot -PathType Container) {
-            Get-ChildItem -LiteralPath $fullRoot -Filter '*.ps1' -File -Recurse
-        }
-    }
-)
-
 Describe 'PowerShell repository safety' {
+    BeforeAll {
+        $repositoryRoot = (Get-Location).Path
+        if (-not (Test-Path -LiteralPath (Join-Path $repositoryRoot 'README.md') -PathType Leaf)) {
+            throw 'Run the Pester suite from the repository root so repository paths resolve correctly.'
+        }
+
+        $scriptRoots = @('Common', 'Win10', 'Win11', 'WinServer')
+        $scriptFiles = @(
+            foreach ($root in $scriptRoots) {
+                $fullRoot = Join-Path $repositoryRoot $root
+                if (Test-Path -LiteralPath $fullRoot -PathType Container) {
+                    Get-ChildItem -LiteralPath $fullRoot -Filter '*.ps1' -File -Recurse
+                }
+            }
+        )
+    }
+
     It 'all tracked platform scripts parse without syntax errors' {
         $parseFailures = New-Object System.Collections.Generic.List[string]
 
