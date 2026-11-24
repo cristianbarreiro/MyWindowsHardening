@@ -1,4 +1,7 @@
-$repositoryRoot = Split-Path -Path $PSScriptRoot -Parent
+$repositoryRoot = (Get-Location).Path
+if (-not (Test-Path -LiteralPath (Join-Path $repositoryRoot 'README.md') -PathType Leaf)) {
+    throw 'Run the Pester suite from the repository root so repository paths resolve correctly.'
+}
 $scriptRoots = @('Common', 'Win10', 'Win11', 'WinServer')
 $scriptFiles = @(
     foreach ($root in $scriptRoots) {
