@@ -9,19 +9,19 @@ generated:
 stale_after: 2026-12-24T00:00:00Z
 sources:
   - id: root-readme
-    resource: ../README.md
+    resource: https://github.com/cristianbarreiro/MyWindowsHardening/blob/main/README.md
     title: Repository profile inventory
   - id: win10-overview
-    resource: ../Win10/README.md
+    resource: https://github.com/cristianbarreiro/MyWindowsHardening/blob/main/Win10/README.md
     title: Windows 10 scope and profiles
   - id: win11-overview
-    resource: ../Win11/README.md
+    resource: https://github.com/cristianbarreiro/MyWindowsHardening/blob/main/Win11/README.md
     title: Windows 11 scope and profiles
   - id: server-overview
-    resource: ../WinServer/README.md
+    resource: https://github.com/cristianbarreiro/MyWindowsHardening/blob/main/WinServer/README.md
     title: Windows Server auditor scope
   - id: windows-release-health
-    resource: sources/windows-platform.md
+    resource: /sources/windows-platform.md
     title: Official Windows release and lifecycle references
 ---
 
