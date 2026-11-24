@@ -1,10 +1,23 @@
-name: PowerShell syntax validation
+name: PowerShell quality checks
 
 on:
   pull_request:
     paths:
+      - "Common/**/*.ps1"
       - "Win10/**/*.ps1"
       - "Win11/**/*.ps1"
+      - "WinServer/**/*.ps1"
+      - "Tests/**/*.ps1"
+      - ".github/workflows/powershell-syntax-validation.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "Common/**/*.ps1"
+      - "Win10/**/*.ps1"
+      - "Win11/**/*.ps1"
+      - "WinServer/**/*.ps1"
+      - "Tests/**/*.ps1"
       - ".github/workflows/powershell-syntax-validation.yml"
   workflow_dispatch:
 
@@ -12,24 +25,39 @@ permissions:
   contents: read
 
 jobs:
-  parse:
-    name: Parse all Windows PowerShell scripts
-    runs-on: windows-latest
+  quality:
+    name: Syntax, static analysis and safety tests
+    runs-on: windows-2022
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Validate PowerShell syntax
+      - name: Install pinned PowerShell quality modules
         shell: powershell
         run: |
           $ErrorActionPreference = 'Stop'
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+          Install-Module -Name Pester -RequiredVersion '5.6.1' -Scope CurrentUser -Force -SkipPublisherCheck
+          Install-Module -Name PSScriptAnalyzer -RequiredVersion '1.23.0' -Scope CurrentUser -Force -SkipPublisherCheck
+          Import-Module Pester -RequiredVersion '5.6.1' -Force
+          Import-Module PSScriptAnalyzer -RequiredVersion '1.23.0' -Force
+
+      - name: Validate Windows PowerShell 5.1 syntax
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $roots = @('Common', 'Win10', 'Win11', 'WinServer', 'Tests')
           $scriptFiles = @(
-              Get-ChildItem -Path 'Win10','Win11' -Filter '*.ps1' -Recurse -File |
-                  Sort-Object -Property FullName
-          )
+              foreach ($root in $roots) {
+                  if (Test-Path -LiteralPath $root -PathType Container) {
+                      Get-ChildItem -LiteralPath $root -Filter '*.ps1' -Recurse -File
+                  }
+              }
+          ) | Sort-Object -Property FullName
 
           if ($scriptFiles.Count -eq 0) {
-              throw 'No PowerShell scripts were found under Win10/ or Win11/.'
+              throw 'No PowerShell scripts were found in the expected repository folders.'
           }
 
           foreach ($file in $scriptFiles) {
@@ -52,3 +80,36 @@ jobs:
           }
 
           Write-Host ("Validated {0} PowerShell script(s)." -f $scriptFiles.Count)
+
+      - name: Run PSScriptAnalyzer
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $roots = @('Common', 'Win10', 'Win11', 'WinServer', 'Tests')
+          $scriptFiles = @(
+              foreach ($root in $roots) {
+                  if (Test-Path -LiteralPath $root -PathType Container) {
+                      Get-ChildItem -LiteralPath $root -Filter '*.ps1' -Recurse -File
+                  }
+              }
+          )
+
+          $diagnostics = @(
+              foreach ($file in $scriptFiles) {
+                  Invoke-ScriptAnalyzer -Path $file.FullName -Severity Error -ErrorAction Stop
+              }
+          )
+
+          if ($diagnostics.Count -gt 0) {
+              $diagnostics | Format-List -Property RuleName, Severity, ScriptName, Line, Message
+              throw ("PSScriptAnalyzer reported {0} error(s)." -f $diagnostics.Count)
+          }
+
+          Write-Host ("PSScriptAnalyzer: no errors in {0} script(s)." -f $scriptFiles.Count)
+
+      - name: Run repository safety tests
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Import-Module Pester -RequiredVersion '5.6.1' -Force
+          Invoke-Pester -Path './Tests' -CI -Output Detailed
