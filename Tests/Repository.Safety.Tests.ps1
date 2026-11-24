@@ -58,6 +58,17 @@ Describe 'PowerShell repository safety' {
         $commands | Where-Object { $_ -in $forbiddenCommands } | Should -BeNullOrEmpty
     }
 
+    It 'NTLM Apply has a verified rollback path and Restore protects foreign firewall rules' {
+        $ntlmPath = Join-Path $repositoryRoot 'Win10/Network-Authentication/Outlook-NTLM-SMB-CVE-2026-124194/Windows-NTLM-SMB-Hardening.ps1'
+        $content = Get-Content -LiteralPath $ntlmPath -Raw
+
+        $content | Should -Match 'Restore-Baseline -Path \$backupDirectory'
+        $content | Should -Match 'Rollback ejecutado y verificado'
+        $content | Should -Match 'Test-ManagedFirewallRule'
+        $content | Should -Match 'Restore incompleto o no verificado'
+        $content | Should -Match 'Hay varios backups'
+    }
+
     It 'general platform baselines keep Apply and Restore blocked' {
         $baselinePaths = @(
             'Win10/Win10-Hardening-20261113.ps1',
